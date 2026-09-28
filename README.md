@@ -8,7 +8,7 @@ retaining page numbers and line breaks.
 
 - [x] Initial repository structure
 - [x] Page-based PyMuPDF extraction prototype
-- [ ] Initial quality review of the PDFs
+- [x] Initial manual quality review of four representative pages
 - [ ] Section and paragraph detection
 - [ ] spaCy sentence segmentation, tokenization, and linguistic annotations
 - [ ] Statistics and JSON outputs
@@ -16,6 +16,11 @@ retaining page numbers and line breaks.
 
 Experiment decisions and findings are recorded in
 [`notes/experiment_log.md`](notes/experiment_log.md).
+
+The first review found that reading order depends on page layout: sorted text
+helped on the sampled single-column pages and table, while preserving PDF order
+helped on the sampled two-column prose page. Neither setting is considered
+best for every page.
 
 ## Installation
 

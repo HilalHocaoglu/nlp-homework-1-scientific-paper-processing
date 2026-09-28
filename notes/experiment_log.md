@@ -39,3 +39,47 @@ and incomplete attempts remain part of the record.
 - **Open limitations:** Equations and tables can be distorted when converted
   to plain text; headers and footers have not been removed. The current review
   covers only three pages and is not a quality claim about all nine papers.
+
+## September 28 — Controlled reading-order review
+
+- **Question:** Does one PyMuPDF ordering option preserve headings, paragraph
+  flow, and figure/table context across different page layouts?
+- **Sample selection:** Manually reviewed the rendered source page alongside
+  both extraction outputs for four pages: `AttentionYouNeed.pdf` pages 2 and 6,
+  `1406.1078v3.pdf` page 2, and `N16-1024.pdf` page 2. This gives us single-
+  column prose, a single-column table, a two-column page with a figure, and a
+  two-column prose page. This is a small, purposive sample, not a benchmark of
+  all pages or papers.
+- **Procedure:** Kept the PDF, page, and extraction code fixed; compared
+  `page.get_text("text", sort=False)` with `sort=True`. Checked the visual page
+  against heading order, column order, paragraph continuity, and table/figure
+  placement. No automatic quality score was used.
+- **Observations:**
+
+  | Page type | `sort=False` | `sort=True` | Page-level decision |
+  | --- | --- | --- | --- |
+  | `AttentionYouNeed.pdf`, p. 2; single-column prose | Paragraphs stay in order, but the heading number and title are separate lines. | Joins `1 Introduction`, keeps paragraphs in order, and makes paragraph boundaries clearer. | Prefer `sort=True` for this page. |
+  | `AttentionYouNeed.pdf`, p. 6; single-column Table 1 | Emits table headers and values by column, so row-to-value relationships are hard to recover. | Reconstructs the visible table row by row; following section text remains in order. | Prefer `sort=True` for this page. |
+  | `1406.1078v3.pdf`, p. 2; two columns and Figure 1 | Preserves the left prose column, then figure labels/caption, then right prose; figure content interrupts the page-level stream. | Interleaves figure labels with prose (`Decoder2`, `xTwhere`) and is harder to read. | `sort=False` is less disruptive here, but neither is fully satisfactory. |
+  | `N16-1024.pdf`, p. 2; two-column prose | Reads the complete left column before the right column, preserving section and paragraph flow. | Alternates lines across columns, breaking paragraph flow. | Prefer `sort=False` for this page. |
+
+- **Third-method trial:** Because neither built-in option gave a clean result on
+  the figure page, tried a one-off prototype: assign text blocks to the left or
+  right half by horizontal center, then sort each half from top to bottom. It
+  moved Figure 1 labels and caption together at the start of the right column,
+  but fragmented equation components into separate blocks. This one-page
+  prototype is not ready to replace either production option; it needs a more
+  careful treatment of equations, full-width material, and tables.
+- **Decision:** Keep both existing options. Use `sort=True` as a useful choice
+  for the reviewed single-column prose and table pages, and preserve PDF order
+  as a useful choice for the reviewed two-column prose page. We have not
+  selected a universal setting. Do not integrate the coordinate prototype yet.
+- **Next experiment:** Apply the same manual comparison to additional pages,
+  including a second table/figure layout and a page with a full-width heading.
+  If the coordinate prototype still helps without damaging paragraph flow,
+  refine it as an explicit third strategy; otherwise keep the two current
+  options. Once the extraction choice is supported by more examples, begin
+  section-heading detection and record its failures in the same way.
+- **Open limitations:** Four pages from three papers cannot establish which
+  setting is best across all nine PDFs. Math and complex visual layouts remain
+  difficult, and this review does not yet measure downstream spaCy effects.
