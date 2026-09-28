@@ -206,3 +206,24 @@ and incomplete attempts remain part of the record.
 - **Next experiment:** For Task 3, compare blank-line boundaries with a
   layout-aware paragraph grouping on selected single- and two-column pages.
   Record where each merges or splits paragraphs before choosing one.
+
+## Input storage update — repository-relative PDF paths
+
+- **Question:** Can the notebook and command-line examples use one stable input
+  location instead of relying on each user's Downloads folder?
+- **Attempt:** Copied the nine course-provided PDF files into the local
+  `data/papers/` directory and changed the notebook's `PDF_FILES` list to use
+  that directory relative to `PROJECT_ROOT`. Updated the README examples and
+  added a source manifest with the original scholarly links.
+- **Observation:** The nine local inputs total about 8.7 MB. Keeping the input
+  files beside the project makes local runs reproducible and avoids
+  user-specific absolute paths.
+- **Constraint:** The repository is public, and the exact redistribution terms
+  for every supplied PDF version have not been verified. The PDF binaries are
+  therefore ignored by Git pending that check; the source manifest is tracked.
+  The local notebook can still read and process these exact copies.
+- **Decision:** Use `data/papers/` as the stable local input directory. Do not
+  publish the PDF binaries until permission to redistribute each exact version
+  is established.
+- **Next step:** Run the notebook's input check and confirm it finds all nine
+  files from the repository root, then resume paragraph-boundary experiments.

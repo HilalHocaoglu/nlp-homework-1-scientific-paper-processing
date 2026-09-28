@@ -4,6 +4,10 @@ __pycache__/
 .DS_Store
 .ipynb_checkpoints/
 
+# Course-supplied research papers are kept locally; redistribute only with
+# permission for the exact PDF versions.
+data/papers/*.pdf
+
 # Generated artifacts (keep directory structure)
 outputs/extracted_text/*
 !outputs/extracted_text/.gitkeep
@@ -11,4 +15,3 @@ outputs/json/*
 !outputs/json/.gitkeep
 outputs/reports/*
 !outputs/reports/.gitkeep
-

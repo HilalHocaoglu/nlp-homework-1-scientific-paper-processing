@@ -44,19 +44,40 @@ python -m spacy download en_core_web_sm
 
 ## Run the first stage
 
-Pass PDF paths on the command line:
+The notebook and examples expect the nine course PDFs under `data/papers/`.
+Place the course-provided files there first; their exact source links and local
+storage note are in [`data/papers/README.md`](data/papers/README.md). PDF
+copies are excluded from Git until redistribution rights for these versions are
+confirmed.
+
+Run extraction from the repository root:
 
 ```bash
 PYTHONPATH=src python -m scipaper.extraction \
-  "$HOME/Downloads/AttentionYouNeed.pdf" \
+  data/papers/AttentionYouNeed.pdf \
   --output-dir outputs/extracted_text
 ```
 
-Multiple PDF paths can be passed in the same command. A page-marked `.txt` file
-is written under `outputs/extracted_text/` for each PDF. Page, character, and
-word counts are printed as JSON in the terminal. Use `--preserve-pdf-order` to
-compare PyMuPDF's default text order; without this option, text blocks are
-sorted by page position.
+Multiple PDF paths can be passed in the same command. A page-marked `.txt`
+file is written under `outputs/extracted_text/` for each PDF. Page, character,
+and word counts are printed as JSON in the terminal. Use
+`--preserve-pdf-order` to compare PyMuPDF's default text order; without this
+option, text blocks are sorted by page position.
+
+## Run section detection
+
+Use the same detector on the supplied PDFs:
+
+```bash
+PYTHONPATH=src python -m scipaper.sections \
+  data/papers/AttentionYouNeed.pdf \
+  data/papers/1406.1078v3.pdf
+```
+
+Pass additional paths from `data/papers/` as needed. The JSON printed to the
+terminal contains each candidate's section ID (when present), title, and
+one-based page number. The notebook runs the detector against all nine files
+listed in `PDF_FILES`.
 
 ## Run section detection
 
@@ -74,8 +95,8 @@ The notebook runs the detector against all nine files listed in `PDF_FILES`.
 
 ## Input and output
 
-- **Input:** PDF files. They do not need to be copied into the repository; pass
-  their paths to the command or set them in the notebook.
+- **Input:** The nine course PDFs stored locally under `data/papers/`; the
+  notebook and CLI use these repository-relative paths.
 - **First output:** UTF-8 text files with page boundaries marked as
   `===== PAGE n =====`.
 - **Later output:** One JSON file per paper for use in Homework 2.
