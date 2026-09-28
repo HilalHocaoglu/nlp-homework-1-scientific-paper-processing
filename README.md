@@ -1,25 +1,25 @@
 # Homework 1 — Scientific Paper Processing with spaCy
 
-Bu depo, bilimsel makaleleri PDF'den başlayarak yapılandırılmış NLP verisine
-dönüştürmek için adım adım geliştiriliyor. İlk aşama, sayfa numaralarını ve
-satır sonlarını koruyarak PDF metnini çıkarmak.
+This repository is being developed incrementally to transform scientific
+papers from PDF into structured NLP data. The first stage extracts text while
+retaining page numbers and line breaks.
 
-## Durum
+## Progress
 
-- [x] Başlangıç depo yapısı
-- [x] Sayfa bazında PyMuPDF çıkarım prototipi
-- [ ] PDF'ler üzerinde ilk kalite incelemesi
-- [ ] Bölüm ve paragraf tespiti
-- [ ] spaCy cümleleme, tokenizasyon ve dilbilgisi etiketleri
-- [ ] İstatistikler ve JSON çıktıları
-- [ ] Rapor ve son kullanım yönergeleri
+- [x] Initial repository structure
+- [x] Page-based PyMuPDF extraction prototype
+- [ ] Initial quality review of the PDFs
+- [ ] Section and paragraph detection
+- [ ] spaCy sentence segmentation, tokenization, and linguistic annotations
+- [ ] Statistics and JSON outputs
+- [ ] Report and final usage instructions
 
-Deneme kararları ve bulgular [`notes/experiment_log.md`](notes/experiment_log.md)
-içinde tutuluyor.
+Experiment decisions and findings are recorded in
+[`notes/experiment_log.md`](notes/experiment_log.md).
 
-## Kurulum
+## Installation
 
-Python 3 ile sanal ortam oluşturup bağımlılıkları kur:
+Create a virtual environment with Python 3 and install the dependencies:
 
 ```bash
 python3 -m venv .venv
@@ -28,9 +28,9 @@ python -m pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 ```
 
-## İlk aşamayı çalıştırma
+## Run the first stage
 
-PDF yollarını komut satırında ver:
+Pass PDF paths on the command line:
 
 ```bash
 PYTHONPATH=src python -m scipaper.extraction \
@@ -38,22 +38,22 @@ PYTHONPATH=src python -m scipaper.extraction \
   --output-dir outputs/extracted_text
 ```
 
-Birden çok PDF yolu aynı komutta verilebilir. Her PDF için `outputs/extracted_text/`
-altına sayfa işaretli bir `.txt` dosyası yazılır; sayfa, karakter ve kelime
-sayıları terminale JSON olarak yazdırılır. Okuma sırası yöntemini karşılaştırmak
-için `--preserve-pdf-order` seçeneği, PyMuPDF'nin varsayılan sırasını kullanır;
-seçenek verilmezse bloklar sayfa konumuna göre sıralanır.
+Multiple PDF paths can be passed in the same command. A page-marked `.txt` file
+is written under `outputs/extracted_text/` for each PDF. Page, character, and
+word counts are printed as JSON in the terminal. Use `--preserve-pdf-order` to
+compare PyMuPDF's default text order; without this option, text blocks are
+sorted by page position.
 
-## Girdi ve çıktı
+## Input and output
 
-- **Girdi:** PDF dosyaları. PDF'leri repoya kopyalamak zorunlu değil; yolları
-  komuta veya notebook ayarına ver.
-- **İlk çıktı:** Sayfa sınırları `===== PAGE n =====` ile işaretlenmiş UTF-8
-  metin dosyaları.
-- **Sonraki çıktı:** Her makale için Homework 2'de kullanılacak JSON.
+- **Input:** PDF files. They do not need to be copied into the repository; pass
+  their paths to the command or set them in the notebook.
+- **First output:** UTF-8 text files with page boundaries marked as
+  `===== PAGE n =====`.
+- **Later output:** One JSON file per paper for use in Homework 2.
 
-## Sınırlamalar
+## Limitations
 
-İlk prototip metin sırasını sayfa koordinatlarına göre düzenlemeyi dener; iki
-sütunlu sayfalarda, tablolar, denklemler ve başlık/altbilgilerde hata yapabilir.
-Bu durumları gerçek çıktıyı inceledikten sonra deney günlüğüne yazacağız.
+The first prototype tries to order text by page coordinates. It can make
+mistakes on two-column pages, tables, equations, headers, and footers. These
+cases will be documented in the experiment log after reviewing the output.
