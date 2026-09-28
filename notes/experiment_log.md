@@ -1,40 +1,41 @@
 # Experiment log
 
-Bu günlük, gerçek denemeleri ve alınan kararları kaydeder. Başarısız veya
-yarım kalan denemeler de silinmeden burada tutulur.
+This log records actual experiments and the decisions they informed. Failed
+and incomplete attempts remain part of the record.
 
-## 28 Eylül — Başlangıç / PDF metin çıkarma
+## September 28 — Setup and PDF text extraction
 
-- **Soru:** Bu çalışma ortamında verilen PDF'lerden sayfa metnini hangi yerel
-  araçla çıkarabiliriz?
-- **Kontrol:** `pdftotext`, `mutool`, PyMuPDF, `pdfplumber`, `pypdf` ve spaCy
-  kullanılabilir mi diye kontrol edildi.
-- **Gözlem:** Başlangıçta bu ortamda PDF araçları kurulu değildi. İnternet
-  erişimi onaylandıktan sonra PyMuPDF yerel `.venv` ortamına kuruldu. SpaCy
-  henüz kurulmadı.
-- **İlk yöntem:** PyMuPDF `page.get_text("text", sort=True)` taban çizgisi
-  olarak denendi. Sayfa başına metin ve sayfa numarası korunuyor; okuma sırası
-  garantisi vermiyor.
-- **Neden bu seçim:** PyMuPDF ödev kısıtlarında izinli. `sort=True` sayfa
-  konumuna göre okuma sırasını düzenlemeyi dener; iki sütun ve karmaşık şekiller
-  için ayrı gözlem gerekecek.
-- **Çıktı:** Dokuz PDF'nin tamamı aynı kodla işlendi: 107 sayfa, toplam 465.733
-  karakter ve 57.726 kelime (kelime sayımı Unicode harf/rakam ve tireli
-  birleşikleri tek kelime sayan regex ile).
-- **İlk gözlem:** Attention sayfa 2'de `sort=True`, başlık ve paragraflar için
-  temiz boşluklar üretti. Ancak `1406.1078v3.pdf` sayfa 2'de şekil etiketleri
-  metin bloklarına karıştı (`Decoder2`, `xTwhere` gibi). `N16-1024.pdf` sayfa
-  2'de `sort=True` sol ve sağ sütun metinlerini satır satır iç içe geçirdi.
-- **Kontrollü karşılaştırma:** Aynı üç sayfada `sort=False` ve `sort=True`
-  karşılaştırıldı. `sort=False`, Attention sayfa 2'de paragraf metnini korudu
-  ama başlık satırını ayrı satırlara böldü. N16 sayfa 2'de `sort=False` sol
-  sütundaki paragraf akışını korurken, `sort=True` sağ sütunla satırları
-  karıştırdı. Bir ayar tüm düzen türlerinde en iyi değil.
-- **Karar:** İki sıralama biçimi de seçenek olarak tutuldu (`sort_blocks` ve
-  `--preserve-pdf-order`). Henüz birini evrensel olarak üstün ilan etmiyoruz.
-- **Sıradaki deneme:** Sütunlu ve tek sütunlu sayfalarda iki ayarı sistematik
-  karşılaştırmak; sonra koordinatlarla önce sütunlara ayırma gibi üçüncü bir
-  yöntemin ek karmaşıklığına değip değmediğine karar vermek.
-- **Açık sınırlamalar:** Formüller ve tablolar düz metne dönüştürülürken
-  bozulabiliyor; başlık/altbilgiler henüz temizlenmedi. Gözlemler şimdilik üç
-  sayfaya dayanıyor, dokuz makalenin tamamı için kalite iddiası değil.
+- **Question:** Which local tool can extract page text from the supplied PDFs?
+- **Environment check:** Checked for `pdftotext`, `mutool`, PyMuPDF,
+  `pdfplumber`, `pypdf`, and spaCy.
+- **Observation:** No PDF tools were installed initially. PyMuPDF was installed
+  in the local `.venv` after network access was approved. spaCy is not
+  installed yet.
+- **First method:** Tried PyMuPDF's `page.get_text("text", sort=True)` as the
+  baseline. It retains page numbers and extracts text page by page, but does
+  not guarantee correct reading order.
+- **Reason for this choice:** PyMuPDF is allowed by the assignment. With
+  `sort=True`, it attempts to order text by page position; columns and complex
+  figures need separate inspection.
+- **Output:** Processed all nine PDFs with the same code: 107 pages, 465,733
+  characters, and 57,726 words. The regex word count treats Unicode letters,
+  digits, and hyphenated compounds as single words.
+- **First observation:** On page 2 of Attention Is All You Need, `sort=True`
+  produced clean spacing around the heading and paragraphs. On page 2 of
+  `1406.1078v3.pdf`, however, figure labels were mixed into text blocks (for
+  example, `Decoder2` and `xTwhere`). On page 2 of `N16-1024.pdf`, `sort=True`
+  interleaved lines from the left and right columns.
+- **Controlled comparison:** Compared `sort=False` and `sort=True` on the same
+  three pages. On Attention page 2, `sort=False` preserved paragraph text but
+  split the section heading across lines. On N16 page 2, `sort=False` preserved
+  the left-column paragraph flow, while `sort=True` mixed it with the right
+  column. No single setting worked best for every layout.
+- **Decision:** Keep both ordering options (`sort_blocks` and
+  `--preserve-pdf-order`). Neither is being treated as universally superior.
+- **Next experiment:** Compare both settings systematically on single-column
+  and two-column pages. Then decide whether a third method, such as grouping
+  text by horizontal coordinates before ordering it, is worth the added
+  complexity.
+- **Open limitations:** Equations and tables can be distorted when converted
+  to plain text; headers and footers have not been removed. The current review
+  covers only three pages and is not a quality claim about all nine papers.
