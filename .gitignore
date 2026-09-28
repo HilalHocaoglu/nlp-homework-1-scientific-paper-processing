@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.venv/
+.DS_Store
+.ipynb_checkpoints/
+
+# Generated artifacts (keep directory structure)
+outputs/extracted_text/*
+!outputs/extracted_text/.gitkeep
+outputs/json/*
+!outputs/json/.gitkeep
+outputs/reports/*
+!outputs/reports/.gitkeep
+
