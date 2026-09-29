@@ -1,0 +1,220 @@
+{
+  "description": "Purposive visual review of sentence boundaries in the supplied PDFs. Every listed paragraph was checked against its PDF page and compared with the generated sentence records. This is a small exploratory sample, not a corpus-wide gold standard.",
+  "review_date": "2026-09-29",
+  "method": "For each case, visually inspect the full paragraph in the PDF, mark its sentence endings, and compare the expected segmentation with outputs/sentences. The expected count is supplementary; the match judgment is based on the sentence boundaries and retained text.",
+  "cases": [
+    {
+      "paper": "1406.1078v3",
+      "page": 2,
+      "paragraph": 22,
+      "sample_type": "equation_reference",
+      "expected_sentence_count": 3,
+      "observed_sentence_count": 3,
+      "exact_boundary_match": true,
+      "note": "Eq. (1) remains inside the second sentence; the three prose sentence endings are preserved."
+    },
+    {
+      "paper": "1406.1078v3",
+      "page": 4,
+      "paragraph": 48,
+      "sample_type": "known_abbreviation_failure",
+      "expected_sentence_count": 1,
+      "observed_sentence_count": 1,
+      "exact_boundary_match": true,
+      "note": "Eq. (9) remains inside one sentence after the narrow abbreviation repair."
+    },
+    {
+      "paper": "1406.1078v3",
+      "page": 4,
+      "paragraph": 56,
+      "sample_type": "known_citation_failure",
+      "expected_sentence_count": 2,
+      "observed_sentence_count": 2,
+      "exact_boundary_match": true,
+      "note": "The et al. parenthetical citation stays in sentence one; sentence two begins with 'They reported'."
+    },
+    {
+      "paper": "1406.1078v3",
+      "page": 10,
+      "paragraph": 119,
+      "sample_type": "ordinary_prose",
+      "expected_sentence_count": 2,
+      "observed_sentence_count": 2,
+      "exact_boundary_match": true,
+      "note": "Both sentence endings match the PDF prose."
+    },
+    {
+      "paper": "1409.0473v7",
+      "page": 3,
+      "paragraph": 26,
+      "sample_type": "equation_reference",
+      "expected_sentence_count": 1,
+      "observed_sentence_count": 1,
+      "exact_boundary_match": true,
+      "note": "The reference '(see Eq. (2))' does not create a false sentence boundary."
+    },
+    {
+      "paper": "1409.0473v7",
+      "page": 9,
+      "paragraph": 88,
+      "sample_type": "ordinary_prose",
+      "expected_sentence_count": 5,
+      "observed_sentence_count": 5,
+      "exact_boundary_match": true,
+      "note": "All five sentence endings match the conclusion paragraph."
+    },
+    {
+      "paper": "1412.3555v1",
+      "page": 4,
+      "paragraph": 40,
+      "sample_type": "equation_reference",
+      "expected_sentence_count": 2,
+      "observed_sentence_count": 2,
+      "exact_boundary_match": true,
+      "note": "The Eq. (2) reference remains within sentence one; sentence two is preserved."
+    },
+    {
+      "paper": "1412.3555v1",
+      "page": 7,
+      "paragraph": 86,
+      "sample_type": "enumeration",
+      "expected_sentence_count": 2,
+      "observed_sentence_count": 2,
+      "exact_boundary_match": true,
+      "note": "The numbered list of recurrent units does not create extra sentence boundaries."
+    },
+    {
+      "paper": "1601.06733v7",
+      "page": 5,
+      "paragraph": 51,
+      "sample_type": "ordinary_prose",
+      "expected_sentence_count": 5,
+      "observed_sentence_count": 5,
+      "exact_boundary_match": true,
+      "note": "Five sentence endings match the PDF paragraph."
+    },
+    {
+      "paper": "1601.06733v7",
+      "page": 5,
+      "paragraph": 58,
+      "sample_type": "figure_reference",
+      "expected_sentence_count": 1,
+      "observed_sentence_count": 1,
+      "exact_boundary_match": true,
+      "note": "The sentence referring to Figure 3b is kept as one sentence."
+    },
+    {
+      "paper": "1607.06450v1",
+      "page": 4,
+      "paragraph": 40,
+      "sample_type": "technical_prose",
+      "expected_sentence_count": 2,
+      "observed_sentence_count": 2,
+      "exact_boundary_match": true,
+      "note": "Two full prose sentences below the displayed equation are preserved."
+    },
+    {
+      "paper": "1607.06450v1",
+      "page": 9,
+      "paragraph": 124,
+      "sample_type": "figure_reference",
+      "expected_sentence_count": 2,
+      "observed_sentence_count": 2,
+      "exact_boundary_match": true,
+      "note": "Both sentence endings match; the Figure 5 reference stays inside sentence two."
+    },
+    {
+      "paper": "1610.02357v3",
+      "page": 2,
+      "paragraph": 16,
+      "sample_type": "abbreviation_and_number",
+      "expected_sentence_count": 2,
+      "observed_sentence_count": 2,
+      "exact_boundary_match": true,
+      "note": "The two 'i.e.' definitions and '1x1' do not create false boundaries."
+    },
+    {
+      "paper": "1610.02357v3",
+      "page": 7,
+      "paragraph": 64,
+      "sample_type": "ordinary_prose",
+      "expected_sentence_count": 2,
+      "observed_sentence_count": 2,
+      "exact_boundary_match": true,
+      "note": "Both sentence endings match the PDF paragraph."
+    },
+    {
+      "paper": "1703.03906v2",
+      "page": 7,
+      "paragraph": 64,
+      "sample_type": "citation_rich_prose",
+      "expected_sentence_count": 3,
+      "observed_sentence_count": 3,
+      "exact_boundary_match": true,
+      "note": "Author-year citations in parentheses do not split any of the three sentences."
+    },
+    {
+      "paper": "1703.03906v2",
+      "page": 7,
+      "paragraph": 66,
+      "sample_type": "numeric_and_table_references",
+      "expected_sentence_count": 2,
+      "observed_sentence_count": 2,
+      "exact_boundary_match": true,
+      "note": "The number 512- and references to Tables 8 and 7 do not create false boundaries."
+    },
+    {
+      "paper": "AttentionYouNeed",
+      "page": 8,
+      "paragraph": 69,
+      "sample_type": "numeric_results",
+      "expected_sentence_count": 4,
+      "observed_sentence_count": 4,
+      "exact_boundary_match": true,
+      "note": "Decimal 2.0 and 28.4, table references, and GPU count are retained within the expected four sentences."
+    },
+    {
+      "paper": "AttentionYouNeed",
+      "page": 7,
+      "paragraph": 50,
+      "sample_type": "ordinary_prose",
+      "expected_sentence_count": 3,
+      "observed_sentence_count": 3,
+      "exact_boundary_match": true,
+      "note": "All three sentence endings match the PDF paragraph."
+    },
+    {
+      "paper": "N16-1024",
+      "page": 3,
+      "paragraph": 20,
+      "sample_type": "citation_rich_prose",
+      "expected_sentence_count": 1,
+      "observed_sentence_count": 1,
+      "exact_boundary_match": true,
+      "note": "The citation and semicolon remain inside a single sentence."
+    },
+    {
+      "paper": "N16-1024",
+      "page": 9,
+      "paragraph": 130,
+      "sample_type": "ordinary_prose",
+      "expected_sentence_count": 4,
+      "observed_sentence_count": 4,
+      "exact_boundary_match": true,
+      "note": "All four sentence endings match the conclusion paragraph."
+    }
+  ],
+  "summary": {
+    "paragraphs_reviewed": 20,
+    "papers_covered": 9,
+    "exact_boundary_matches": 20,
+    "mismatches": 0,
+    "interpretation": "20/20 exact matches in this deliberately varied, manually selected sample. The sample includes previously observed failure types, technical edge cases, and ordinary prose; it is not random or exhaustive and does not establish 100% accuracy on all pages."
+  },
+  "excluded_candidate": {
+    "paper": "1607.06450v1",
+    "page": 4,
+    "paragraph": 37,
+    "reason": "Excluded from sentence-boundary scoring because the extracted prose block ends with 'Then we have,' and continues into a displayed equation. This is primarily a paragraph/layout boundary issue, not a complete prose paragraph."
+  }
+}

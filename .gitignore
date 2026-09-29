@@ -11,6 +11,10 @@ data/papers/*.pdf
 # Generated artifacts (keep directory structure)
 outputs/extracted_text/*
 !outputs/extracted_text/.gitkeep
+outputs/paragraphs/*
+!outputs/paragraphs/.gitkeep
+outputs/sentences/*
+!outputs/sentences/.gitkeep
 outputs/json/*
 !outputs/json/.gitkeep
 outputs/reports/*

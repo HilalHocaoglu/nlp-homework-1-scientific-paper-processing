@@ -10,8 +10,9 @@ retaining page numbers and line breaks.
 - [x] Page-based PyMuPDF extraction prototype
 - [x] PDF extraction, per-paper counts, and manual review of seven sample pages
 - [x] Section heading and subsection detection, with a small visual review
-- [ ] Paragraph detection
-- [ ] spaCy sentence segmentation, tokenization, and linguistic annotations
+- [x] Paragraph records with page/section metadata and a small manual review
+- [x] spaCy sentence segmentation on all papers (Task 4, provisional)
+- [ ] Tokenization, lemma/POS/dependency annotations
 - [ ] Statistics and JSON outputs
 - [ ] Report and final usage instructions
 
@@ -30,6 +31,20 @@ lettered appendix headings observed in the supplied set. Its output is a
 candidate list, not verified ground truth: only a small set of pages has been
 visually reviewed. See the experiment log for false positives, missed
 headings, revisions, and remaining limitations.
+
+Task 3 uses PyMuPDF text blocks as the paragraph baseline. It orders clear
+two-column pages by column, associates body text with the most recent detected
+section, filters recognized headings, captions, equations, tables, and page
+numbers. On page 1, title-page blocks before the first detected structural
+heading are recorded as front matter and excluded from paragraph records. The
+pipeline processed all nine PDFs (107 pages) and produced 1,396 paragraph
+records. It exactly matched the 14 manually labeled paragraphs on two fully
+reviewed development pages; this small development score is not corpus-wide
+accuracy. The output remains experimental: borderless tables, paragraphs that
+continue across pages, figure labels, and missed section headings can still
+affect results. Manually reviewed page labels and the sample score are in
+[`data/annotations/task3_manual_review.json`](data/annotations/task3_manual_review.json)
+and [`notes/experiment_log.md`](notes/experiment_log.md).
 
 ## Installation
 
@@ -79,19 +94,38 @@ terminal contains each candidate's section ID (when present), title, and
 one-based page number. The notebook runs the detector against all nine files
 listed in `PDF_FILES`.
 
-## Run section detection
+## Run paragraph extraction
 
-Use the same detector on the supplied PDFs:
+Generate one interim paragraph-structure JSON file per paper:
 
 ```bash
-PYTHONPATH=src python -m scipaper.sections \
-  "$HOME/Downloads/AttentionYouNeed.pdf" \
-  "$HOME/Downloads/1406.1078v3.pdf"
+PYTHONPATH=src python -m scipaper.paragraphs data/papers/*.pdf
 ```
 
-Pass additional PDF paths as needed. The JSON printed to the terminal contains
-each candidate's section ID (when present), title, and one-based page number.
-The notebook runs the detector against all nine files listed in `PDF_FILES`.
+Files are written to `outputs/paragraphs/`. Each paragraph record includes the
+paper, page, detected section ID/title, paragraph number, text, and source
+candidate IDs. The JSON also records excluded headings and non-prose candidates
+so the heuristic decisions can be inspected. These are Task 3 outputs; the final
+Homework 2-ready JSON with sentence and token annotations is a later task.
+
+## Run sentence segmentation
+
+After generating Task 3 paragraph JSON files, run spaCy's English model on
+each paragraph:
+
+```bash
+PYTHONPATH=src python -m scipaper.sentences outputs/paragraphs/*_paragraphs.json
+```
+
+Sentence-level JSON files are written to `outputs/sentences/`. Sentences are
+nested under their paragraph, so paper, page, section, and paragraph context
+remains attached. The pipeline uses the model parser's sentence boundaries and
+only repairs the observed split after a known abbreviation when the next span
+starts with a parenthesis. A purposive visual review matched 20/20 paragraphs
+across all nine papers; this is a small exploratory sample, not a corpus-wide
+accuracy estimate. The cases and limits are in
+`data/annotations/task4_manual_review_expanded.json` and
+`notes/experiment_log.md`.
 
 ## Input and output
 
@@ -103,6 +137,8 @@ The notebook runs the detector against all nine files listed in `PDF_FILES`.
 
 ## Limitations
 
-PDF text and heading extraction can make mistakes on two-column pages, tables,
-equations, headers, and footers. The current heading rules are provisional;
-visual review and their observed limits are documented in the experiment log.
+PDF text, heading, and paragraph extraction can make mistakes on two-column
+pages, borderless tables, equations, figures, headers, and footers. Paragraphs
+that continue across page boundaries may be split. The current rules are
+provisional; visual reviews and their observed limits are documented in the
+experiment log.

@@ -1,0 +1,17 @@
+{
+  "description": "Small sentence-boundary development sample manually checked against the PDF page. It is not a corpus-wide gold standard.",
+  "paper": "1406.1078v3",
+  "page": 4,
+  "reviews": [
+    {
+      "paragraph": 48,
+      "expected_sentence_count": 1,
+      "boundary_note": "Eq. (9) is part of the sentence; it must not split after Eq."
+    },
+    {
+      "paragraph": 56,
+      "expected_sentence_count": 2,
+      "boundary_note": "Devlin et al. (Devlin et al., 2014) is one citation in the first sentence; the next sentence starts with 'They reported'."
+    }
+  ]
+}
