@@ -15,6 +15,12 @@ outputs/paragraphs/*
 !outputs/paragraphs/.gitkeep
 outputs/sentences/*
 !outputs/sentences/.gitkeep
+outputs/tokens/*
+!outputs/tokens/.gitkeep
+outputs/statistics/*
+!outputs/statistics/.gitkeep
+outputs/dependency_examples/*
+!outputs/dependency_examples/.gitkeep
 outputs/json/*
 !outputs/json/.gitkeep
 outputs/reports/*

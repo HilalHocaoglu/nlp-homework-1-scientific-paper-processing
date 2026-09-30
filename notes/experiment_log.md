@@ -188,3 +188,140 @@ scientific abbreviations without splitting a paragraph at every period?
   accuracy estimate. Task 4 is provisionally complete for the pipeline; retain
   the narrow repair and move to Task 5 tokenization, recording new failures if
   later tasks expose them.
+
+## Task 5 — Tokenization and linguistic annotations (September 29)
+
+**Question:** Does spaCy's default tokenization keep scientific notation
+readable, and should tags be assigned in the paragraph or the corrected
+sentence context?
+
+- **Attempt 1 — spaCy English defaults:** Token boundaries for decimals and
+  spaced citations looked useful, but attached inline forms such as `p(xt)`
+  and `f(Wx` stayed partly joined. A scan of the 3,666 sentence records found
+  138 word-plus-parenthesis tokens of this kind.
+- **Attempt 2 — split only before `(`:** This separated `f` from its opening
+  parenthesis but left forms such as `(Wx` joined. It was incomplete, so it was
+  not retained.
+- **Attempt 3 — two Unicode-aware spaCy infix rules:** Split at both letter/`(`
+  and `(`/letter joins, keeping spaCy's default English rules. Examples now
+  tokenize as `p ( xt )`, `f ( Wx + b )`, and `NT ( X )`. On the current corpus,
+  total tokens rise from 60,401 to 60,748; 130 of 3,666 sentences change.
+  Sample citations, decimals (`2.0`, `28.4`), and already spaced prose retained
+  their default boundaries. This is a corpus-wide count comparison plus spot
+  inspection, not a tokenization gold-standard score.
+- **Context experiment:** Re-parsing full paragraphs can reintroduce sentence
+  boundaries that Task 4 manually repaired and makes sentence-to-token mapping
+  harder. We therefore parse each corrected Task 4 sentence independently.
+  This can change POS/dependency predictions compared with paragraph-context
+  parsing, so the model's syntactic labels remain provisional.
+- **Output:** Generated nine local token JSON files, 3,666 sentences and
+  60,748 spaCy tokens. Each token stores its original text, following
+  whitespace, zero-based sentence-local index, lemma, coarse POS, dependency,
+  head text, and head index. Punctuation is retained. Task 7 can reuse the
+  head information.
+- **Limit / next:** Mathematical symbols can receive unhelpful English POS and
+  dependency labels even when their token boundaries improve; inline equations
+  such as `x_i` remain model-tokenized units. The model is not manually
+  correcting scientific notation. Task 5 is provisionally complete; next
+  calculate per-paper POS statistics for Task 6 and keep checking annotation
+  quality on representative sentences.
+
+## Task 6 — Part-of-speech statistics (September 29)
+
+**Question:** How can we compare spaCy POS distributions across papers of
+different lengths without hiding the counting choices?
+
+- **Attempt 1 — raw counts only:** Counts are required and useful for auditing,
+  but longer papers naturally accumulate more tokens, so counts alone do not
+  support a fair comparison. Kept counts and added normalized percentages.
+- **Attempt 2 — percentage of every token:** Punctuation is a spaCy token but
+  does not belong to the nine requested lexical POS categories. In
+  `AttentionYouNeed`, punctuation is 16.48% of all tokens; using every token as
+  the denominator reduces NOUN from 26.48% to 22.12%. Use non-punctuation tokens
+  as the POS denominator instead, while retaining punctuation and total-token
+  counts as separate fields.
+- **Aggregation:** Count the required nine POS tags, group remaining
+  non-punctuation tags (such as AUX, CCONJ, PART, SYM, and X) as `OTHER`, and
+  report counts plus percentages. The CSV and JSON definition records state
+  the denominator explicitly.
+- **Batch output:** Processed all nine Task 5 JSON files: 60,748 total tokens,
+  of which 10,291 were punctuation; POS percentages therefore use 50,457
+  non-punctuation tokens. Wrote combined local CSV and JSON under
+  `outputs/statistics/`.
+- **Three-paper comparison:** `AttentionYouNeed` has NOUN 26.48%, NUM 6.12%,
+  PROPN 13.02%; `N16-1024` has NOUN 25.45%, NUM 4.12%, PROPN 18.48%; and
+  `1607.06450v1` has NOUN 26.78%, NUM 4.25%, PROPN 14.43%. This shows different
+  observed distributions, not why they differ.
+- **Limit / next:** Scientific notation contributes tokens that spaCy may label
+  as PROPN, NUM, or SYM; references also contain many names and numbers.
+  `OTHER` hides its internal tag mix in the compact table. POS percentages are
+  descriptive outputs, not a manual linguistic gold standard. Task 6 is
+  provisionally complete; continue to Task 7 dependency examples and
+  visualizations, with the same model-label caveats.
+
+## Task 7 — Dependency parsing and visualization (September 29)
+
+- **Sample design:** Selected 10 sentences from 10 distinct sections across
+  all nine papers. Each example records its paper, page, section, paragraph,
+  and sentence location so it can be traced to the source and reproduced.
+- **Output:** Reused Task 5's spaCy token annotations to create a 223-row token
+  table with token, lemma, POS, dependency label, and syntactic head. The
+  manifest, JSON sample, and CSV are generated by one command; three selected
+  cases also have standalone displaCy HTML diagrams.
+- **Structure review:** The diagrams illustrate a passive training-objective
+  sentence, a relative clause in *The Machine Reader*, and a reported-results
+  list. The coordinated list is attached imperfectly by the model; its output
+  is shown as a prediction rather than corrected to a gold parse.
+- **Checks:** The generator found all 10 source sentences in their recorded
+  locations, preserved the Task 5 token boundaries for each diagram, and
+  produced the required columns and all three SVG diagrams. Fixed duplicate
+  HTML body styling discovered during output inspection. Module compilation
+  and `git diff --check` passed.
+- **Automated test attempt:** Added five focused `unittest` checks for exact
+  location/section lookup, the 10-section minimum, unique sample IDs, CSV/JSON
+  fields, three HTML diagrams, and tokenizer mismatch rejection. The first
+  run exposed a fixture bug: two examples from one paper caused the fixture to
+  overwrite one paragraph. Preserving both fixture paragraphs fixed it; all
+  five tests then passed. A rerun on the real Task 7 data produced 10 examples,
+  10 sections, 223 token rows, and three diagrams.
+- **Limit / next:** This checks reproducibility and output shape, not dependency
+  accuracy: no gold dependency trees were manually annotated. Technical
+  notation, PDF hyphenation (including `Tensor- Flow`), and long coordinated
+  lists can lead to poor POS or attachment decisions. Explain three parses
+  with those caveats, then move to Task 8 document statistics and final JSON.
+
+## Task 8 — Document statistics (September 29)
+
+- **Definition choice:** Kept total spaCy token counts inclusive of punctuation
+  to stay consistent with Task 5. For average sentence/paragraph length and
+  unique token types, excluded `PUNCT`; casefolded surface forms so `Model` and
+  `model` count as one type. The JSON records these choices.
+- **Compared alternatives:** In `AttentionYouNeed`, average sentence length is
+  16.08 tokens when punctuation is included and 13.43 when excluded. Its
+  unique non-punctuation types are 1,582 with case-sensitive surfaces and
+  1,491 after casefolding. The detector reports 25 section candidates, while
+  paragraph records cover 24 distinct section labels. Kept the explicit
+  casefolded/non-punctuation definition and the detector's candidate count;
+  the alternate values show why the table must document its counting rules.
+- **Section-count choice:** Reported the Task 2 detector's section candidates
+  from inherited metadata. These counts are not treated as verified headings.
+- **Output:** Processed the nine Task 5 JSON files and wrote combined CSV/JSON
+  under `outputs/statistics/`. Aggregate counts: 107 pages, 192 detected
+  section candidates, 1,396 paragraph records, 3,666 sentences, and 60,748
+  spaCy tokens (including punctuation). Per-paper averages and unique-type
+  counts are in the tables.
+- **Consistency check:** Confirmed nine paper rows and reconciled the totals
+  against nested records and inherited metadata for paragraphs, sentences, and
+  tokens. The module now stops on those metadata/count mismatches instead of
+  silently producing a misleading table. Source compilation, notebook JSON
+  parsing, and `git diff --check` also succeeded.
+- **Automated checks:** Added five `unittest` cases for punctuation handling,
+  casefolded unique types, zero-sentence documents, section metadata fallback,
+  metadata/count mismatches, and CSV/JSON export. All five passed. The tests
+  verify calculation behavior; they do not validate upstream PDF extraction
+  or whether detected headings are correct.
+- **Limit / next:** Statistics inherit errors from PDF extraction, section,
+  paragraph, sentence, token, and POS stages. A casefolded surface type is not
+  a lemma; unique counts can differ if hyphenation or tokenization changes.
+  This completes Task 8 provisionally. Next build Homework 2-ready JSON files
+  (Task 9) and ensure the README and report explain these limitations.

@@ -12,8 +12,11 @@ retaining page numbers and line breaks.
 - [x] Section heading and subsection detection, with a small visual review
 - [x] Paragraph records with page/section metadata and a small manual review
 - [x] spaCy sentence segmentation on all papers (Task 4, provisional)
-- [ ] Tokenization, lemma/POS/dependency annotations
-- [ ] Statistics and JSON outputs
+- [x] spaCy tokenization, lemma/POS/dependency annotations (Task 5, provisional)
+- [x] Per-paper POS statistics and three-paper comparison (Task 6, provisional)
+- [x] Ten dependency examples and three displaCy diagrams (Task 7, provisional)
+- [x] Document statistics across all nine papers (Task 8, provisional)
+- [ ] Final JSON outputs for all papers (Task 9)
 - [ ] Report and final usage instructions
 
 Experiment decisions and findings are recorded in
@@ -126,6 +129,85 @@ across all nine papers; this is a small exploratory sample, not a corpus-wide
 accuracy estimate. The cases and limits are in
 `data/annotations/task4_manual_review_expanded.json` and
 `notes/experiment_log.md`.
+
+## Run tokenization and linguistic annotations
+
+After generating Task 4 sentence JSON files, run the spaCy English pipeline:
+
+```bash
+PYTHONPATH=src python -m scipaper.tokens outputs/sentences/*_sentences.json
+```
+
+One annotated JSON file per paper is written to `outputs/tokens/`. Each
+sentence contains spaCy tokens with zero-based sentence-local indices, original
+token text and following whitespace, lemma, coarse POS, dependency label, and
+syntactic head. Punctuation tokens are kept. A small, general tokenizer rule
+separates parentheses attached to letters in inline formulas (for example,
+`p(xt)`); all other English tokenizer rules are retained. This improves
+delimiter boundaries in the reviewed notation, while POS and dependency labels
+on mathematical symbols remain uncertain. See the experiment log for the
+baseline comparison and limits.
+
+## Run POS statistics
+
+After generating Task 5 token JSON files, summarize the required spaCy POS
+labels for every paper:
+
+```bash
+PYTHONPATH=src python -m scipaper.pos_stats outputs/tokens/*_tokens.json
+```
+
+The combined files `outputs/statistics/pos_statistics.json` and
+`outputs/statistics/pos_statistics.csv` contain counts for NOUN, VERB, ADJ,
+ADV, PROPN, PRON, DET, ADP, and NUM, plus an `OTHER` group for remaining
+non-punctuation tags. Percentages use non-punctuation tokens as the denominator;
+total and punctuation token counts are also reported. The notebook compares
+`AttentionYouNeed`, `N16-1024`, and `1607.06450v1`. Results are descriptive and
+can be affected by references, formula tokens, and spaCy tagging errors.
+
+## Run dependency examples
+
+The curated Task 7 manifest selects 10 sentences from 10 distinct sections.
+Generate the token/head table and three displaCy diagrams with:
+
+```bash
+PYTHONPATH=src python -m scipaper.dependencies
+```
+
+Sentence locations, sections, and three short structural explanations are in
+`data/annotations/task7_dependency_examples.json`. Output files are written
+locally to `outputs/dependency_examples/`: a JSON sample, a CSV with one row
+per token (including syntactic head), and three standalone HTML diagrams. The
+notebook displays the table and diagrams. Dependency structures are spaCy
+predictions and require human interpretation, especially around formulas,
+hyphenated PDF text, and coordinated lists.
+
+Run the Task 7 and Task 8 checks with:
+
+```bash
+PYTHONPATH=src python -m unittest discover -s tests -v
+```
+
+These tests verify Task 7 sample lookup, manifest requirements, token/head
+table fields, JSON output, diagram generation, and tokenizer consistency. For
+Task 8 they check counting definitions, empty-document behavior, metadata
+consistency, and CSV/JSON output. They do not measure dependency accuracy or
+the accuracy of upstream PDF structure detection.
+
+## Run document statistics
+
+Summarize the Task 1–7 outputs for every paper:
+
+```bash
+PYTHONPATH=src python -m scipaper.document_stats outputs/tokens/*_tokens.json
+```
+
+The combined `outputs/statistics/document_statistics.csv` and
+`document_statistics.json` include page count, detected section candidates,
+paragraphs, sentences, all spaCy tokens, case-folded unique non-punctuation
+token forms, and average sentence/paragraph lengths. Average lengths exclude
+tokens tagged `PUNCT`; the JSON records these definitions. Section counts are
+the Task 2 detector's candidates, not manually verified ground truth.
 
 ## Input and output
 

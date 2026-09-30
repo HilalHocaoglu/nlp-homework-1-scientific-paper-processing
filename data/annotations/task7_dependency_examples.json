@@ -1,0 +1,99 @@
+{
+  "description": "Ten manually selected sentences from ten distinct sections across all nine course papers. Three sentences are selected for dependency-structure explanations and displaCy diagrams.",
+  "cases": [
+    {
+      "case_id": "passive_training_objective",
+      "paper": "1406.1078v3",
+      "page": 1,
+      "paragraph": 9,
+      "sentence": 4,
+      "section": "Introduction",
+      "visualize": true,
+      "explanation": "The root is 'trained'. 'networks' is its passive subject and 'are' is the passive auxiliary. 'maximize' is an open complement of 'trained'; its object is 'probability', expanded by the 'conditional' modifier and the 'of' phrase."
+    },
+    {
+      "case_id": "translation_experiment",
+      "paper": "1406.1078v3",
+      "page": 5,
+      "paragraph": 61,
+      "sentence": 1,
+      "section": "Experiments",
+      "visualize": false
+    },
+    {
+      "case_id": "neural_machine_translation_background",
+      "paper": "1409.0473v7",
+      "page": 2,
+      "paragraph": 10,
+      "sentence": 2,
+      "section": "BACKGROUND: NEURAL MACHINE TRANSLATION",
+      "visualize": false
+    },
+    {
+      "case_id": "recurrent_unit_results",
+      "paper": "1412.3555v1",
+      "page": 6,
+      "paragraph": 79,
+      "sentence": 3,
+      "section": "Results and Analysis",
+      "visualize": false
+    },
+    {
+      "case_id": "machine_reader_relative_clause",
+      "paper": "1601.06733v7",
+      "page": 3,
+      "paragraph": 28,
+      "sentence": 1,
+      "section": "The Machine Reader",
+      "visualize": true,
+      "explanation": "The root is 'present', with 'we' as its subject and 'reader' as its object. The relative clause beginning with 'which' modifies 'reader'; 'designed' heads that clause, and 'to process' is its complement. The 'while retaining' clause adds concurrent information."
+    },
+    {
+      "case_id": "normalization_analysis",
+      "paper": "1607.06450v1",
+      "page": 3,
+      "paragraph": 29,
+      "sentence": 1,
+      "section": "Analysis",
+      "visualize": false
+    },
+    {
+      "case_id": "xception_architecture",
+      "paper": "1610.02357v3",
+      "page": 3,
+      "paragraph": 30,
+      "sentence": 1,
+      "section": "The Xception architecture",
+      "visualize": false
+    },
+    {
+      "case_id": "reporting_experimental_results",
+      "paper": "1703.03906v2",
+      "page": 4,
+      "paragraph": 31,
+      "sentence": 1,
+      "section": "Experiments and Discussion",
+      "visualize": true,
+      "explanation": "The root is 'report', with 'we' as its subject and 'BLEU' as a direct object. The list 'mean BLEU, standard deviation, highest BLEU, and model size' is a coordinated series of reported measures. SpaCy attaches parts of the list imperfectly, so the diagram should be read as a model prediction rather than a gold parse."
+    },
+    {
+      "case_id": "encoder_representations",
+      "paper": "AttentionYouNeed",
+      "page": 2,
+      "paragraph": 13,
+      "sentence": 3,
+      "section": "Model Architecture",
+      "visualize": false
+    },
+    {
+      "case_id": "transition_sequence",
+      "paper": "N16-1024",
+      "page": 3,
+      "paragraph": 33,
+      "sentence": 1,
+      "section": "Transition Sequences from Trees",
+      "visualize": false
+    }
+  ],
+  "limitations": "Samples are selected to cover distinct sections and varied syntax; they are not random. spaCy uses the en_core_web_sm model and the Task 5 scientific-parenthesis tokenizer. Technical notation and PDF hyphenation can produce unreliable POS or dependency labels."
+}
