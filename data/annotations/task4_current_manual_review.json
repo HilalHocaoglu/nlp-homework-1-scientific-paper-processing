@@ -1,0 +1,44 @@
+{
+  "description": "Small visual sentence-boundary review against the current Task 3 paragraph output. The sample is selected and is not a corpus-wide accuracy estimate.",
+  "review_date": "2026-09-30",
+  "method": "Rendered each cited PDF page and compared the visible sentence endings with the current Task 4 output for the listed paragraph. The expected ending text is recorded so the notebook can check the same boundaries after a rerun.",
+  "cases": [
+    {
+      "paper": "1406.1078v3",
+      "page": 4,
+      "paragraph": 47,
+      "sample_type": "citation-rich ordinary prose",
+      "expected_sentence_count": 4,
+      "expected_endings": ["systems.", "2006)).", "input.", "2013)."],
+      "exact_boundary_match": true,
+      "note": "The visually inspected paragraph includes author-year citations, including an et al. form, and four prose sentence endings. The Task 4 boundaries match."
+    },
+    {
+      "paper": "AttentionYouNeed",
+      "page": 8,
+      "paragraph": 68,
+      "sample_type": "decimal numbers and table references",
+      "expected_sentence_count": 4,
+      "expected_endings": ["28.4.", "3.", "GPUs.", "models."],
+      "exact_boundary_match": true,
+      "note": "The visually inspected paragraph contains the decimal 2.0, table references, and four sentence endings. None is split at a decimal or table number."
+    },
+    {
+      "paper": "1601.06733v7",
+      "page": 5,
+      "paragraph": 50,
+      "sample_type": "ordinary technical prose",
+      "expected_sentence_count": 5,
+      "expected_endings": ["one.", "source).", "sequences.", "combination.", "below."],
+      "exact_boundary_match": true,
+      "note": "The visually inspected paragraph is prose adjacent to equations and a figure. Its five sentence endings match the current Task 4 output."
+    }
+  ],
+  "summary": {
+    "paragraphs_reviewed": 3,
+    "papers_covered": 3,
+    "exact_boundary_matches": 3,
+    "mismatches": 0,
+    "interpretation": "3/3 exact matches on this selected visual review. The earlier 20-case review used paragraph IDs from a prior Task 3 version and cannot be transferred to the current numbering automatically."
+  }
+}

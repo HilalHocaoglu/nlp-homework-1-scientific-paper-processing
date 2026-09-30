@@ -2,4 +2,3 @@ PyMuPDF
 spacy
 jupyter
 pandas
-

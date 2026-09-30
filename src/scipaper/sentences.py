@@ -1,4 +1,4 @@
-"""spaCy sentence segmentation for the paragraph records from Task 3."""
+"""spaCy sentence segmentation for the cleaned Homework 2 paragraphs."""
 
 from __future__ import annotations
 
@@ -41,7 +41,7 @@ def _join_known_false_splits(sentence_texts: list[str]) -> tuple[list[str], int]
 def segment_paragraphs(
     paragraph_document: dict[str, Any], nlp: Language
 ) -> dict[str, Any]:
-    """Add spaCy sentence records to every paragraph in a Task 3 JSON object."""
+    """Add spaCy sentence records to each cleaned paragraph."""
     paragraphs = paragraph_document.get("paragraphs", [])
     texts = [str(paragraph.get("text", "")) for paragraph in paragraphs]
     segmented: list[dict[str, Any]] = []
@@ -76,7 +76,7 @@ def segment_paragraphs(
 
 
 def process_file(path: Path, nlp: Language, output_dir: Path) -> dict[str, Any]:
-    """Read one Task 3 JSON file, add sentence segmentation, and save it."""
+    """Read one cleaned paragraph JSON file, segment it, and save it."""
     document = json.loads(path.read_text(encoding="utf-8"))
     result = segment_paragraphs(document, nlp)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -87,9 +87,9 @@ def process_file(path: Path, nlp: Language, output_dir: Path) -> dict[str, Any]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Segment Task 3 paragraph JSON files into spaCy sentences."
+        description="Segment cleaned Homework 2 paragraph JSON files into spaCy sentences."
     )
-    parser.add_argument("inputs", nargs="+", type=Path, help="Task 3 paragraph JSON files")
+    parser.add_argument("inputs", nargs="+", type=Path, help="Cleaned paragraph JSON files")
     parser.add_argument(
         "--model", default="en_core_web_sm", help="Installed spaCy model (default: en_core_web_sm)"
     )
