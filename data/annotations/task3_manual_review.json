@@ -1,0 +1,54 @@
+{
+  "description": "Small visual reference set from pages manually reviewed during Task 3. It is a development sample, not a corpus-wide gold standard.",
+  "method": "layout_blocks",
+  "reviews": [
+    {
+      "paper": "1406.1078v3",
+      "page": 5,
+      "complete_page_review": true,
+      "labels": {
+        "1": "heading",
+        "2": "paragraph",
+        "3": "paragraph",
+        "4": "paragraph",
+        "5": "paragraph",
+        "6": "paragraph",
+        "7": "paragraph",
+        "8": "paragraph",
+        "9": "heading",
+        "10": "paragraph",
+        "11": "heading",
+        "12": "paragraph",
+        "13": "paragraph"
+      }
+    },
+    {
+      "paper": "AttentionYouNeed",
+      "page": 3,
+      "complete_page_review": true,
+      "labels": {
+        "1": "caption",
+        "2": "paragraph",
+        "3": "heading",
+        "4": "paragraph",
+        "5": "paragraph",
+        "6": "heading",
+        "7": "paragraph",
+        "8": "page_number"
+      }
+    },
+    {
+      "paper": "AttentionYouNeed",
+      "page": 6,
+      "complete_page_review": false,
+      "labels": {
+        "1": "caption",
+        "2": "table",
+        "6": "equation",
+        "7": "equation",
+        "8": "paragraph"
+      },
+      "notes": "Only the table region and positional-encoding equation group were reviewed; this page is not used for full paragraph precision/recall."
+    }
+  ]
+}
