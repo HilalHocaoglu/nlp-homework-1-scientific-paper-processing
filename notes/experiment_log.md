@@ -4,6 +4,45 @@ Short chronological record of the methods tried, what we observed, and why we
 kept or changed each method. Scores apply only to the labeled examples named
 here; they are not claims about every page.
 
+## Current-version audit — September 30
+
+- **Why rerun:** The Task 3 paragraph filter changed, so paragraph IDs and
+  downstream counts no longer matched earlier Task 4 labels, Task 7 sentence
+  locations, or saved Task 8 statistics. Treat counts recorded below as the
+  history of earlier runs unless this section gives a newer value.
+- **Task 3:** The notebook regenerated all nine paragraph files: 928 records
+  over 107 pages. The two fully labeled development pages still match 14/14
+  paragraph groups. Visual inspection of later outputs found some table rows
+  and equation-adjacent fragments retained as paragraph candidates, so the
+  small page score does not cover those layouts.
+- **Task 4:** The former 20-case review was tied to old paragraph numbers and
+  cannot be transferred by page and number alone. A fresh visual sample of
+  three paragraphs across three papers matched 3/3 expected sentence endings.
+  This sample is deliberately small and is not a corpus-wide score. The current
+  cases and expected endings are in
+  `data/annotations/task4_current_manual_review.json`.
+- **Tasks 5–6:** The latest notebook run generated 2,285 sentences and 48,068
+  annotated tokens. The POS denominator is 40,983 non-punctuation tokens; the
+  previous tokenizer comparison totals are historical and were removed from
+  current-run reporting.
+- **Task 7:** The first rerun exposed obsolete paragraph/section locations in
+  the dependency manifest. I reselected ten sentences from ten distinct
+  sections using current token outputs. The regenerated files contain 238
+  token rows and three displaCy diagrams. These parses remain model outputs,
+  not gold trees.
+- **Tasks 8–9:** Task 8 now regenerates its CSV and JSON from current Task 5
+  files instead of reading stale saved statistics. Latest totals are 107
+  pages, 192 detected heading candidates, 928 paragraphs, 2,285 sentences,
+  48,068 tokens, and 157 section groups with paragraphs. Task 9 regenerated
+  one nested JSON file per paper.
+- **Notebook run:** After the above changes, all 34 notebook cells completed
+  without execution errors. The saved notebook includes those outputs. No
+  commit or push was made.
+- **Open limitations:** PDF blocks still split some prose around tables,
+  displayed equations, and figures. The current Task 4 sample is small, and
+  the Task 7 dependency examples have not been compared with manually labeled
+  gold trees.
+
 ## Task 1 — PDF text extraction (September 28)
 
 **Question:** Which allowed extraction approach keeps page text and reading
@@ -325,3 +364,52 @@ different lengths without hiding the counting choices?
   a lemma; unique counts can differ if hyphenation or tokenization changes.
   This completes Task 8 provisionally. Next build Homework 2-ready JSON files
   (Task 9) and ensure the README and report explain these limitations.
+
+## Task 9 — Final nested JSON representation (September 30)
+
+- **Attempt 1 — reuse Task 5 JSON unchanged:** It preserves every annotation,
+  but its top level is a flat paragraph list with section labels on paragraphs;
+  that does not match the requested `sections → paragraphs → sentences →
+  tokens` structure. Kept it as the reproducible source input, not the final
+  deliverable format.
+- **Attempt 2 — group by first-seen `(section_id, title)`:** Built one ordered
+  section object per populated heading, retaining paragraph IDs, page numbers,
+  paragraph text, sentence IDs/text, token indices and whitespace, lemmas,
+  POS, dependency labels, and syntactic heads. Added Task 8 statistics and an
+  explicit note that empty/unassigned heading candidates are not serialized.
+- **Comparison:** Across the corpus, Task 2 reports 192 section candidates,
+  while Task 9 has 176 distinct section groups containing paragraphs. For
+  example, `AttentionYouNeed` has 25 detected candidates and 24 populated
+  groups. These values answer different questions; the output reports both
+  rather than dropping or inventing empty paragraph groups.
+- **Output:** Generated nine files under `outputs/json/`. Their nested records
+  retain the same aggregate 1,396 paragraphs, 3,666 sentences, and 60,748
+  tokens as Tasks 3–5. The CLI refuses metadata/count mismatches and duplicate
+  paper IDs that would overwrite a file.
+- **Limit / next:** These files preserve upstream decisions; they do not repair
+  missed headings, paragraph segmentation, or spaCy errors. Empty sections
+  without assigned paragraphs are omitted, and section grouping relies on
+  Task 3 labels. Task 9 is provisionally complete. Remaining deliverables are
+  the short report and a final README/notebook review; do not push until asked.
+
+## Final notebook verification (September 30)
+
+- Updated Task 6 display to show the required POS percentages for all nine
+  papers, while retaining a detailed count/percentage comparison for three.
+  Split Task 8 into two narrower tables so the nine-paper metrics fit the
+  notebook view; all requested statistics remain available in the CSV/JSON.
+- Ran all notebook cells from the project root with the project `.venv` kernel.
+  All 19 code cells completed without errors. The run regenerated the current
+  outputs for Tasks 1–9.
+- Current run totals: 9 PDFs, 107 pages, 192 section candidates, 928 paragraphs,
+  2,285 sentences, and 48,068 spaCy tokens. Nine final nested JSON files were
+  generated. Task 7 produced 10 examples from 10 distinct sections and three
+  visualizations. POS and document-statistics files each contain all nine
+  papers.
+- All 10 unit tests passed; `git diff --check` passed. Earlier aggregate totals
+  recorded in dated Task 3–9 entries describe prior pipeline runs and are
+  superseded by this final run. The current report and notebook use the totals
+  above.
+- **Limit:** A successful run and unit tests confirm execution and output
+  structure, not gold-standard accuracy for every extracted heading, paragraph,
+  sentence, or spaCy annotation. No GitHub push was made.

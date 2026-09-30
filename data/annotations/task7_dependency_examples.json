@@ -1,21 +1,21 @@
 {
-  "description": "Ten manually selected sentences from ten distinct sections across all nine course papers. Three sentences are selected for dependency-structure explanations and displaCy diagrams.",
+  "description": "Ten manually selected sentences from ten distinct sections across the nine course papers. Three sentences are selected for dependency-structure explanations and displaCy diagrams.",
   "cases": [
     {
       "case_id": "passive_training_objective",
       "paper": "1406.1078v3",
       "page": 1,
-      "paragraph": 9,
-      "sentence": 4,
-      "section": "Introduction",
+      "paragraph": 1,
+      "sentence": 3,
+      "section": "Abstract",
       "visualize": true,
-      "explanation": "The root is 'trained'. 'networks' is its passive subject and 'are' is the passive auxiliary. 'maximize' is an open complement of 'trained'; its object is 'probability', expanded by the 'conditional' modifier and the 'of' phrase."
+      "explanation": "The sentence describes the model's training objective. In the spaCy parse, 'trained' is the main predicate; 'encoder' and 'decoder' are the coordinated participants, and 'maximize' expresses the purpose of training. The tree is a model prediction, so attachment choices should be checked against the sentence meaning."
     },
     {
       "case_id": "translation_experiment",
       "paper": "1406.1078v3",
       "page": 5,
-      "paragraph": 61,
+      "paragraph": 60,
       "sentence": 1,
       "section": "Experiments",
       "visualize": false
@@ -24,18 +24,18 @@
       "case_id": "neural_machine_translation_background",
       "paper": "1409.0473v7",
       "page": 2,
-      "paragraph": 10,
-      "sentence": 2,
+      "paragraph": 8,
+      "sentence": 1,
       "section": "BACKGROUND: NEURAL MACHINE TRANSLATION",
       "visualize": false
     },
     {
       "case_id": "recurrent_unit_results",
       "paper": "1412.3555v1",
-      "page": 6,
-      "paragraph": 79,
-      "sentence": 3,
-      "section": "Results and Analysis",
+      "page": 5,
+      "paragraph": 63,
+      "sentence": 1,
+      "section": "Tasks and Datasets",
       "visualize": false
     },
     {
@@ -46,13 +46,13 @@
       "sentence": 1,
       "section": "The Machine Reader",
       "visualize": true,
-      "explanation": "The root is 'present', with 'we' as its subject and 'reader' as its object. The relative clause beginning with 'which' modifies 'reader'; 'designed' heads that clause, and 'to process' is its complement. The 'while retaining' clause adds concurrent information."
+      "explanation": "The sentence presents a machine reader. The main predicate is 'present', with 'we' as its subject and 'reader' as its object. The clause beginning with 'which' describes the reader; the diagram shows spaCy's predicted attachments, which are useful to discuss but are not manually annotated gold labels."
     },
     {
       "case_id": "normalization_analysis",
       "paper": "1607.06450v1",
       "page": 3,
-      "paragraph": 29,
+      "paragraph": 26,
       "sentence": 1,
       "section": "Analysis",
       "visualize": false
@@ -61,7 +61,7 @@
       "case_id": "xception_architecture",
       "paper": "1610.02357v3",
       "page": 3,
-      "paragraph": 30,
+      "paragraph": 29,
       "sentence": 1,
       "section": "The Xception architecture",
       "visualize": false
@@ -69,18 +69,18 @@
     {
       "case_id": "reporting_experimental_results",
       "paper": "1703.03906v2",
-      "page": 4,
-      "paragraph": 31,
-      "sentence": 1,
-      "section": "Experiments and Discussion",
+      "page": 1,
+      "paragraph": 10,
+      "sentence": 3,
+      "section": "Introduction",
       "visualize": true,
-      "explanation": "The root is 'report', with 'we' as its subject and 'BLEU' as a direct object. The list 'mean BLEU, standard deviation, highest BLEU, and model size' is a coordinated series of reported measures. SpaCy attaches parts of the list imperfectly, so the diagram should be read as a model prediction rather than a gold parse."
+      "explanation": "The sentence lists four reported measures and adds a participial phrase about variance numbers. 'report' is the main predicate and 'We' is its subject. The measures form a coordinated list; spaCy may attach list items imperfectly, so the diagram is a predicted analysis rather than a gold parse."
     },
     {
       "case_id": "encoder_representations",
       "paper": "AttentionYouNeed",
       "page": 2,
-      "paragraph": 13,
+      "paragraph": 12,
       "sentence": 3,
       "section": "Model Architecture",
       "visualize": false
@@ -89,11 +89,11 @@
       "case_id": "transition_sequence",
       "paper": "N16-1024",
       "page": 3,
-      "paragraph": 33,
+      "paragraph": 32,
       "sentence": 1,
       "section": "Transition Sequences from Trees",
       "visualize": false
     }
   ],
-  "limitations": "Samples are selected to cover distinct sections and varied syntax; they are not random. spaCy uses the en_core_web_sm model and the Task 5 scientific-parenthesis tokenizer. Technical notation and PDF hyphenation can produce unreliable POS or dependency labels."
+  "limitations": "The samples are selected to cover distinct sections and varied sentence structures; they are not random. spaCy uses en_core_web_sm and the Task 5 scientific-parenthesis tokenizer. Technical notation, PDF hyphenation, and coordinated lists can produce uncertain POS or dependency labels."
 }

@@ -51,6 +51,7 @@ def _write_html(path: Path, title: str, details: str, doc: Any) -> None:
         doc,
         style="dep",
         page=True,
+        jupyter=False,
         options={"compact": True, "distance": 100},
     )
     safe_title = html.escape(title)

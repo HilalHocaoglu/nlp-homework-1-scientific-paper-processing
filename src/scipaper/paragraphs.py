@@ -10,8 +10,9 @@ from __future__ import annotations
 import argparse
 import json
 import re
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
+from statistics import median
 from typing import Any, Literal
 
 import pymupdf
@@ -37,6 +38,11 @@ def _repair_line_hyphenation(text: str) -> str:
 
 def _word_tokens(text: str) -> list[str]:
     return re.findall(r"[\w]+", text.casefold(), flags=re.UNICODE)
+
+
+def _edge_fingerprint(text: str) -> str:
+    """Normalize text for conservative repeated running-header/footer checks."""
+    return re.sub(r"[^\w]+", " ", text.casefold(), flags=re.UNICODE).strip()
 
 
 def _heading_match(
@@ -238,6 +244,7 @@ def extract_paragraph_candidates(
                         continue
                     lines: list[str] = []
                     line_span_counts: list[int] = []
+                    span_sizes: list[float] = []
                     for line in block.get("lines", []):
                         pieces: list[str] = []
                         previous_end: float | None = None
@@ -252,6 +259,7 @@ def extract_paragraph_candidates(
                             pieces.append(span_text)
                             previous_end = float(x1)
                             span_count += 1
+                            span_sizes.append(float(span.get("size", 0)))
                         line_text = "".join(pieces).strip()
                         if line_text:
                             lines.append(line_text)
@@ -275,6 +283,7 @@ def extract_paragraph_candidates(
                                 "source_block": block_index,
                                 "line_count": len(lines),
                                 "line_span_counts": line_span_counts,
+                                "font_size_median": round(median(span_sizes), 2) if span_sizes else None,
                                 "table_rule_count": overlapping_rules,
                                 "page_width": round(float(page.rect.width), 2),
                             }
@@ -311,8 +320,34 @@ def extract_document_paragraphs(pdf_path: str | Path) -> dict[str, Any]:
 
     candidates = extract_paragraph_candidates(path, method="layout_blocks")
     by_page: dict[int, list[dict[str, Any]]] = {}
+    with pymupdf.open(path) as document:
+        page_heights = {number: float(page.rect.height) for number, page in enumerate(document, start=1)}
+    edge_pages: dict[str, set[int]] = defaultdict(set)
     for candidate in candidates:
         by_page.setdefault(int(candidate["page"]), []).append(candidate)
+        bbox = candidate.get("bbox")
+        page = int(candidate["page"])
+        height = page_heights[page]
+        if bbox and (bbox[1] <= height * 0.12 or bbox[3] >= height * 0.88):
+            fingerprint = _edge_fingerprint(candidate["text"])
+            # Ignore page numbers here; they have their own geometric rule.
+            if fingerprint and not PAGE_NUMBER_PATTERN.fullmatch(candidate["text"]):
+                edge_pages[fingerprint].add(page)
+    repeated_edge_fingerprints = {
+        fingerprint for fingerprint, pages_found in edge_pages.items() if len(pages_found) >= 2
+    }
+    body_font_sizes: dict[int, float] = {}
+    for page_number, page_candidates in by_page.items():
+        sizes = [
+            round(float(candidate["font_size_median"]), 1)
+            for candidate in page_candidates
+            if candidate.get("font_size_median")
+            and candidate.get("bbox")
+            and page_heights[page_number] * 0.12 < candidate["bbox"][1]
+            and candidate["bbox"][3] < page_heights[page_number] * 0.86
+        ]
+        if sizes:
+            body_font_sizes[page_number] = float(Counter(sizes).most_common(1)[0][0])
 
     paragraphs: list[dict[str, Any]] = []
     excluded: list[dict[str, Any]] = []
@@ -335,6 +370,41 @@ def extract_document_paragraphs(pdf_path: str | Path) -> dict[str, Any]:
                         first_heading_index = index
                         break
             for candidate_index, candidate in enumerate(page_candidates):
+                fingerprint = _edge_fingerprint(candidate["text"])
+                bbox = candidate.get("bbox")
+                font_size = candidate.get("font_size_median")
+                body_font_size = body_font_sizes.get(page_number)
+                has_footer_url = bool(re.search(r"https?://", candidate["text"], re.I))
+                if (
+                    bbox
+                    and body_font_size
+                    and font_size
+                    and bbox[1] >= page_heights[page_number] * 0.86
+                    and (
+                        float(font_size) <= body_font_size * 0.85
+                        or (has_footer_url and float(font_size) <= body_font_size * 0.95)
+                    )
+                    and len(_word_tokens(candidate["text"])) <= 80
+                ):
+                    excluded.append(
+                        {
+                            "page": page_number,
+                            "candidate_id": candidate["candidate_id"],
+                            "type": "footer_or_footnote",
+                            "text": candidate["text"],
+                        }
+                    )
+                    continue
+                if fingerprint in repeated_edge_fingerprints:
+                    excluded.append(
+                        {
+                            "page": page_number,
+                            "candidate_id": candidate["candidate_id"],
+                            "type": "repeated_header_footer_or_title",
+                            "text": candidate["text"],
+                        }
+                    )
+                    continue
                 if (
                     page_number == 1
                     and first_heading_index is not None
@@ -435,6 +505,45 @@ def extract_document_paragraphs(pdf_path: str | Path) -> dict[str, Any]:
                             "_bbox": candidate.get("bbox"),
                         }
                     )
+
+    # A title page may not have a machine-detectable Abstract heading. If an
+    # Abstract-labelled paragraph is present, discard all preceding page-one
+    # blocks (title, authors, affiliations, and publication metadata).
+    first_abstract = next(
+        (index for index, item in enumerate(paragraphs)
+         if item["page"] == 1 and str(item.get("section", "")).casefold() == "abstract"),
+        None,
+    )
+    if first_abstract is not None:
+        front_matter = paragraphs[:first_abstract]
+        excluded.extend(
+            {
+                "page": item["page"],
+                "candidate_id": item["source_candidates"][0],
+                "type": "front_matter_title_or_author_block",
+                "text": item["text"],
+            }
+            for item in front_matter
+        )
+        paragraphs = paragraphs[first_abstract:]
+
+    # References and acknowledgments are useful for auditing section
+    # boundaries, but are not part of the assignment's summary corpus.
+    kept_paragraphs: list[dict[str, Any]] = []
+    for item in paragraphs:
+        section_name = str(item.get("section", "")).casefold()
+        if section_name in {"references", "acknowledgments", "acknowledgements"}:
+            excluded.append(
+                {
+                    "page": item["page"],
+                    "candidate_id": item["source_candidates"][0],
+                    "type": "excluded_section_" + section_name,
+                    "text": item["text"],
+                }
+            )
+        else:
+            kept_paragraphs.append(item)
+    paragraphs = kept_paragraphs
 
     for paragraph_id, paragraph in enumerate(paragraphs, start=1):
         paragraph["paragraph"] = paragraph_id
