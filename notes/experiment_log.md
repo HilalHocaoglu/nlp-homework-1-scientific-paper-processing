@@ -413,3 +413,20 @@ different lengths without hiding the counting choices?
 - **Limit:** A successful run and unit tests confirm execution and output
   structure, not gold-standard accuracy for every extracted heading, paragraph,
   sentence, or spaCy annotation. No GitHub push was made.
+
+## Notebook output readability review (October 1)
+
+- **Observed:** Task 1 extraction counts printed as separate lines, while the
+  238-row Task 7 token DataFrame was shortened by pandas to the first and last
+  rows (the visible jump to row 233). No token rows were missing from the CSV.
+- **Change tried:** Rendered Task 1 paper counts and totals as one table; kept
+  raw PDF excerpts as wrapped text to preserve their line-layout evidence; split
+  the Task 7 token output into ten complete per-sentence tables.
+- **Correction:** The first extraction-table run referenced the display label
+  instead of the source `paper` key. Corrected the field and reran the notebook.
+- **Result:** All 19 code cells completed with no errors. The notebook now stores
+  one extraction summary table and ten dependency tables containing all 238
+  token rows. All 10 unit tests and `git diff --check` passed.
+- **Limit:** Raw PDF excerpts still show the source layout artifacts; wrapping
+  improves readability but does not repair PDF reading order or recover table
+  structure. These changes are local and have not been pushed.
