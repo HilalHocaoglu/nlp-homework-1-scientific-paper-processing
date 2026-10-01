@@ -1,4 +1,4 @@
-"""spaCy sentence segmentation for the cleaned Homework 2 paragraphs."""
+"""spaCy sentence segmentation for the cleaned Homework 1 paragraphs."""
 
 from __future__ import annotations
 
@@ -87,7 +87,7 @@ def process_file(path: Path, nlp: Language, output_dir: Path) -> dict[str, Any]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Segment cleaned Homework 2 paragraph JSON files into spaCy sentences."
+        description="Segment cleaned Homework 1 paragraph JSON files into spaCy sentences."
     )
     parser.add_argument("inputs", nargs="+", type=Path, help="Cleaned paragraph JSON files")
     parser.add_argument(

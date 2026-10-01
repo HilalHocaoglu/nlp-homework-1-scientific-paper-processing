@@ -1,4 +1,4 @@
-"""Tokenize cleaned Homework 2 sentences and add spaCy linguistic annotations."""
+"""Tokenize cleaned Homework 1 sentences and add spaCy linguistic annotations."""
 
 from __future__ import annotations
 

@@ -362,7 +362,7 @@ different lengths without hiding the counting choices?
 - **Limit / next:** Statistics inherit errors from PDF extraction, section,
   paragraph, sentence, token, and POS stages. A casefolded surface type is not
   a lemma; unique counts can differ if hyphenation or tokenization changes.
-  This completes Task 8 provisionally. Next build Homework 2-ready JSON files
+  This completes Task 8 provisionally. Next build Homework 1-ready JSON files
   (Task 9) and ensure the README and report explain these limitations.
 
 ## Task 9 — Final nested JSON representation (September 30)

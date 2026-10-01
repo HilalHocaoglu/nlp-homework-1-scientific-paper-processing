@@ -1,4 +1,4 @@
-"""Build Homework 2-ready nested JSON documents from Task 5 outputs."""
+"""Build Homework 1-ready nested JSON documents from Task 5 outputs."""
 
 from __future__ import annotations
 
@@ -124,7 +124,7 @@ def process_files(inputs: list[Path], output_dir: Path) -> list[dict[str, Any]]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Create one nested Homework 2 JSON representation per paper."
+        description="Create one nested Homework 1 JSON representation per paper."
     )
     parser.add_argument("inputs", nargs="+", type=Path, help="Task 5 annotated token JSON files")
     parser.add_argument(

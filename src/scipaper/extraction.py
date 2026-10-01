@@ -1,4 +1,4 @@
-"""PDF text extraction baseline for Homework 2.
+"""PDF text extraction baseline for Homework 1.
 
 This module deliberately keeps the extraction step small and inspectable. It
 does not try to infer sections or repair equations; those are later pipeline
@@ -43,7 +43,7 @@ def extract_pdf(pdf_path: str | Path, *, sort_blocks: bool = True) -> list[dict[
 
 
 def document_statistics(pages: list[dict[str, Any]]) -> dict[str, int]:
-    """Return basic extraction counts for the Homework 2 input PDF."""
+    """Return basic extraction counts for the Homework 1 input PDF."""
     text = "\n".join(page["text"] for page in pages)
     return {
         "pages": len(pages),
