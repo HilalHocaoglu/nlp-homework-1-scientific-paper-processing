@@ -430,3 +430,17 @@ different lengths without hiding the counting choices?
 - **Limit:** Raw PDF excerpts still show the source layout artifacts; wrapping
   improves readability but does not repair PDF reading order or recover table
   structure. These changes are local and have not been pushed.
+
+
+## GitHub deliverables audit (October 2)
+
+- Checked the latest `main` tree against the assignment deliverables. The
+  notebook, report, README, and requirements file were present; the nine final
+  JSON files were missing because `outputs/json/*` was ignored.
+- Validated the nine local JSON files: all parse, have the expected paper IDs,
+  and contain 928 paragraphs, 2,285 sentences, and 48,068 tokens in total.
+  Updated `.gitignore` to track only these final JSON deliverables while leaving
+  intermediate generated files ignored.
+- Rechecked the notebook (19/19 code cells have successful stored outputs) and
+  ran the unit suite: all 10 tests passed. Course PDFs remain local inputs; no
+  submission ZIP was created in this step.

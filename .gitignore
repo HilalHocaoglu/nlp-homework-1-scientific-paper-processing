@@ -23,5 +23,6 @@ outputs/dependency_examples/*
 !outputs/dependency_examples/.gitkeep
 outputs/json/*
 !outputs/json/.gitkeep
+!outputs/json/*.json
 outputs/reports/*
 !outputs/reports/.gitkeep
